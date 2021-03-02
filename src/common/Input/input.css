@@ -1,0 +1,31 @@
+.form-group {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.form-group label {
+  font-size: 2rem;
+  padding-bottom: 0.5rem;
+}
+
+.form-control {
+  border: 1px solid #fff;
+  border-radius: 3px;
+  color: #010c3f;
+  font-size: 1.8rem;
+  flex-basis: 100%;
+  width: 100%;
+}
+
+.alert {
+  background-color: #f8d7da;
+  border-radius: 5px;
+  color: #bf7d83;
+  font-size: 1.5rem;
+  flex-basis: 100%;
+  width: 100%;
+  margin: 0.5rem 0;
+  padding: 1rem;
+}
