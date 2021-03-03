@@ -1,10 +1,23 @@
-# Getting Started with Create React App
+# Getting Started with Jamming React App
+
+Jamming is a simple music app built with Spotify APIs.
+This app allows to search for your favorite Songs/Artists/Albums,
+Create new playlist, select from the list of existing playlists,
+add/remove songs and update the playlist.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
 
 In the project directory, you can run:
+
+### `npm install`
+
+Befor you start the project you should set some environment variables:
+
+- Base url (REACT_APP_API_URL) to: `https://api.spotify.com/v1`
+- Client Id(REACT_APP_CLIENT_ID) to: your client id from spotify
+- And you need to modify the spotifyService file in services directory
 
 ### `npm start`
 
