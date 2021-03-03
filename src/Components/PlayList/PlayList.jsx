@@ -10,6 +10,11 @@ export default class PlayList extends Form {
     errors: {},
   };
 
+  componentDidMount() {
+    const { playlistName } = this.props;
+    if (playlistName) this.setState({ data: { playlistName: playlistName } });
+  }
+
   schema = {
     playlistName: Joi.string().required().label("Playlist Name"),
   };
@@ -17,11 +22,12 @@ export default class PlayList extends Form {
   doSubmit = () => {
     this.props.onSave(this.state.data.playlistName);
   };
+
   render() {
     const { playlistTracks, onAdd, onRemove } = this.props;
     return (
-      <div className="Playlist">
-        {this.renderInput("playlistName", "Playlist", "Enter a playlist name")}
+      <section className="Playlist">
+        {this.renderInput("playlistName", "Playlist Name")}
         <TrackList
           tracks={playlistTracks}
           onAdd={onAdd}
@@ -29,7 +35,7 @@ export default class PlayList extends Form {
           isRemoval={true}
         />
         {this.renderButton("SAVE TO SPOTIFY")}
-      </div>
+      </section>
     );
   }
 }

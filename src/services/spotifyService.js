@@ -1,9 +1,10 @@
 import http from "./httpService";
-
+import { toast } from "react-toastify";
 const url = "https://accounts.spotify.com/authorize";
 const clientId = process.env.REACT_APP_CLIENT_ID;
 const scopes = "playlist-modify-public";
-const redirect_uri = "http://selective-heart.surge.sh/";
+const redirect_uri = "http://localhost:3000/";
+let userId;
 
 let accessToken;
 let expiresIn;
@@ -37,6 +38,7 @@ const Spotify = {
       const { data } = await http.get(`/search?type=track&q=${searchTerm}`);
 
       if (!data.tracks) return [];
+      // toast.error("res", data);
 
       return data.tracks.items.map((track) => ({
         id: track.id,
@@ -46,29 +48,89 @@ const Spotify = {
         uri: track.uri,
       }));
     } catch (err) {
-      console.log(err);
+      toast.error(err);
     }
   },
 
-  async savePlaylist(name, uris) {
-    if (!name && !uris.length) return;
-
+  async getCurrentUserId() {
+    if (userId) return userId;
     try {
       const token = await this.getAccessToken();
       http.setHeaders(token);
-      let userId;
-      let playlistId;
 
-      const { data } = await http.get("/me", {});
+      const { data } = await http.get("/me");
       userId = data.id;
 
-      const res = await http.post(`/users/${userId}/playlists`, { name });
-      playlistId = res.data.id;
-      await http.post(`/users/${userId}/playlists/${playlistId}/tracks`, {
-        uris,
-      });
+      return userId;
     } catch (err) {
-      console.log(err);
+      toast.error(err);
+    }
+  },
+
+  async getUserPlaylists() {
+    try {
+      const userId = await this.getCurrentUserId();
+      const token = await this.getAccessToken();
+      http.setHeaders(token);
+      const { data } = await http.get(`/users/${userId}/playlists`);
+
+      return data.items.map((item) => ({
+        id: item.id,
+        name: item.name,
+      }));
+    } catch (err) {
+      toast.error(err);
+    }
+  },
+
+  async getPlaylist(id) {
+    try {
+      const token = await this.getAccessToken();
+      http.setHeaders(token);
+      const userId = await this.getCurrentUserId();
+      const { data } = await http.get(
+        `/users/${userId}/playlists/${id}/tracks`,
+      );
+      return data.items.map((item) => ({
+        id: item.track.id,
+        name: item.track.name,
+        artist: item.track.artists[0].name,
+        album: item.track.album.name,
+        uri: item.track.uri,
+      }));
+    } catch (err) {
+      toast.error(err);
+    }
+  },
+
+  async savePlaylist(name, uris, playlistId) {
+    if (!name && !uris.length) return;
+
+    const userId = await this.getCurrentUserId();
+    const token = await this.getAccessToken();
+    http.setHeaders(token);
+
+    if (playlistId) {
+      try {
+        await http.put(`/playlists/${playlistId}`, { name });
+        await http.put(`/users/${userId}/playlists/${playlistId}/tracks`, {
+          uris,
+        });
+      } catch (err) {
+        toast.error(err);
+      }
+    } else {
+      try {
+        const res = await http.post(`/users/${userId}/playlists`, {
+          name,
+        });
+        const playlistId = res.data.id;
+        await http.post(`/users/${userId}/playlists/${playlistId}/tracks`, {
+          uris,
+        });
+      } catch (err) {
+        toast.error(err);
+      }
     }
   },
 };

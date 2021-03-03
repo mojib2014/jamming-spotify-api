@@ -1,40 +1,27 @@
-import React, { Component } from "react";
+import React from "react";
 import "./Track.css";
 
-export default class Track extends Component {
-  renderAction = () => {
-    const { isRemoval } = this.props;
+export default function Track({ track, isRemoval, onAdd, onRemove }) {
+  const renderAction = () => {
     return isRemoval ? (
-      <button className="Track-action" onClick={this.removeTrack}>
+      <button className="Track-action" onClick={() => onRemove(track)}>
         -
       </button>
     ) : (
-      <button className="Track-action" onClick={this.addTrack}>
+      <button className="Track-action" onClick={() => onAdd(track)}>
         +
       </button>
     );
   };
-
-  addTrack = () => {
-    this.props.onAdd(this.props.track);
-  };
-
-  removeTrack = () => {
-    this.props.onRemove(this.props.track);
-  };
-
-  render() {
-    const { track } = this.props;
-    return (
-      <div className="Track">
-        <div className="Track-information">
-          <h3>{track.name}</h3>
-          <p>
-            {track.artist} | {track.album}
-          </p>
-        </div>
-        {this.renderAction()}
+  return (
+    <div className="Track">
+      <div className="Track-information">
+        <h3>{track.name}</h3>
+        <p>
+          {track.artist} | {track.album}
+        </p>
       </div>
-    );
-  }
+      {renderAction()}
+    </div>
+  );
 }

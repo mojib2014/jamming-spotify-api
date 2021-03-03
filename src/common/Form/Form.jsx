@@ -50,16 +50,15 @@ export default class Form extends Component {
     this.doSubmit();
   };
 
-  renderInput(name, label, placeholder, type = "text") {
+  renderInput(name, label, type = "text") {
     const { data, errors } = this.state;
 
     return (
       <Input
-        name={name}
-        label={label}
         type={type}
-        placeholder={placeholder}
+        name={name}
         value={data[name]}
+        label={label}
         onChange={this.handleChange}
         error={errors[name]}
       />
